@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getWordDetails } from "../store/actions/wordActions";
 import Loader from "../components/Loader";
@@ -33,15 +33,23 @@ const Row = styled.div`
 
 const Word = () => {
   const { catId, id } = useParams();
+  const history = useNavigate();
+
+  const userState = useSelector((state) => state.user);
+  const { user } = userState;
 
   const dispatch = useDispatch();
 
   const wordState = useSelector((state) => state.wordDetails);
-  const { loading, error, word } = wordState;
+  const { loading, word } = wordState;
 
   useEffect(() => {
-    dispatch(getWordDetails(id));
-  }, [dispatch, id]);
+    if (user) {
+      dispatch(getWordDetails(id));
+    } else {
+      history("/login");
+    }
+  }, [dispatch, id, history, user]);
 
   return (
     <Container>

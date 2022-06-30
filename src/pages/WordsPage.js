@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategoryWords } from "../store/actions/categoryActions";
 import styled from "styled-components";
@@ -55,16 +55,24 @@ const BackButton = styled(Link)`
 const WordsPage = () => {
   const dispatch = useDispatch();
 
+  const history = useNavigate();
   const { id } = useParams();
 
+  const userState = useSelector((state) => state.user);
+  const { user } = userState;
+
   const categoryWordState = useSelector((state) => state.categoryWords);
-  const { loading: wordsLoading, error: wordsError, words } = categoryWordState;
+  const { loading: wordsLoading, words } = categoryWordState;
 
   useEffect(() => {
-    if (!words) {
-      dispatch(getCategoryWords(id));
+    if (user) {
+      if (!words) {
+        dispatch(getCategoryWords(id));
+      }
+    } else {
+      history("/login");
     }
-  }, [dispatch, id, words]);
+  }, [dispatch, id, words, user, history]);
 
   return (
     <Container>

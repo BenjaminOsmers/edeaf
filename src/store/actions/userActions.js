@@ -84,7 +84,7 @@ export const updateUser = createAsyncThunk(
 
       const userNew = {
         name,
-        surname,
+        lastName: surname,
         email,
         token: user.token,
       };
@@ -92,6 +92,23 @@ export const updateUser = createAsyncThunk(
       localStorage.setItem("userInfo", JSON.stringify(userNew));
 
       return userNew;
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      console.log(error.response.data);
+
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
+export const setUser = createAsyncThunk(
+  "set/user",
+  async ({ name, surname, email }, { rejectWithValue, getState }) => {
+    try {
+      return { name, lastName: surname, email };
     } catch (error) {
       if (!error.response) {
         throw error;

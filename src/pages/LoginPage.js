@@ -67,7 +67,7 @@ const LabelStyled = styled.label`
   margin: 0;
 `;
 
-const Heading = styled.h1`
+const Heading = styled.div`
   font-family: "Poppins", sans-serif;
   margin-bottom: 0.8em;
   width: 100%;

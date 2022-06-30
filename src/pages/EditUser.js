@@ -1,17 +1,124 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../store/actions/userActions";
+import { updateUser, setUser } from "../store/actions/userActions";
 import Loader from "../components/Loader";
+import Button from "../components/Button";
 import { Formik, Field, Form } from "formik";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-top: 100px;
+  padding-bottom: 40px;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
+  max-width: 500px;
+  padding: 2.5rem 3rem;
+  border-radius: 1.5rem;
+
+  background: rgba(255, 255, 255, 0.48);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(14.1px);
+  -webkit-backdrop-filter: blur(14.1px);
+  border: 1px solid rgba(255, 255, 255, 1);
+`;
+
+const FormStyled = styled(Form)`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const FieldStyled = styled(Field)`
+  padding: 15px;
+  border-radius: 5px;
+  background-color: rgba(241, 241, 241, 0.8);
+  border: 0.5px solid ${(props) => (props.error ? "red" : "#fff")};
+  margin: 8px 0;
+
+  &:focus {
+    border: 0.5px solid #ca61d7;
+    outline: 1.5px solid #ca61d7;
+  }
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+`;
+
+const LabelStyled = styled.label`
+  padding-left: 5px;
+  margin: 0;
+`;
+
+const Heading = styled.div`
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0.8em;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  & > h1 {
+    line-height: 1em;
+    font-size: 28px;
+  }
+
+  & > h2 {
+    color: #999;
+    font-weight: 400;
+    font-size: 18px;
+  }
+
+  & > p {
+    font-size: 13px;
+    color: #555;
+    margin-top: 0.8em;
+  }
+
+  @media (min-width: 768px) {
+    & > h1 {
+      font-size: 54px;
+    }
+
+    & > h2 {
+      font-size: 30px;
+    }
+
+    & > p {
+      font-size: 25px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    & > h1 {
+      font-size: 50px;
+    }
+
+    & > p {
+      font-size: 20px;
+    }
+  }
+`;
 
 const EditUser = () => {
-  const [message, setMessage] = useState(null);
-
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state) => state.user);
-  const { loading, error, user } = userDetails;
+  const { loading, user } = userDetails;
 
   const userUpdateProfile = useSelector((state) => state.userUpdate);
   const { loading: updateLoading } = userUpdateProfile;
@@ -33,43 +140,68 @@ const EditUser = () => {
         email: values.email,
       })
     );
+
+    if (updateLoading === "success") {
+      dispatch(
+        setUser({
+          name: values.name,
+          surname: values.surname,
+          email: values.email,
+        })
+      );
+    }
   };
 
   return (
-    <div>
+    <Container>
       {loading === "loading" ? (
         <Loader text="Fetching Profile" />
       ) : updateLoading === "loading" ? (
         <Loader text="Updating Profile" />
       ) : (
-        <Formik
-          initialValues={{
-            name: user.name,
-            surname: user.lastName,
-            email: user.email,
-          }}
-          onSubmit={(values) => submitHandler(values)}
-        >
-          <Form>
-            <label htmlFor="name">Name</label>
-            <Field id="name" name="name" placeholder="Name" />
+        <FormContainer>
+          <Heading>
+            <h1>Edit Profile</h1>
+          </Heading>
+          <Formik
+            initialValues={{
+              name: user ? user.name : "",
+              surname: user ? user.lastName : "",
+              email: user ? user.email : "",
+            }}
+            onSubmit={(values) => submitHandler(values)}
+          >
+            <FormStyled>
+              <FormGroup>
+                <LabelStyled htmlFor="name">Name</LabelStyled>
+                <FieldStyled id="name" name="name" placeholder="Name" />
+              </FormGroup>
 
-            <label htmlFor="surname">Surname</label>
-            <Field id="surname" name="surname" placeholder="Surname" />
+              <FormGroup>
+                <LabelStyled htmlFor="surname">Surname</LabelStyled>
+                <FieldStyled
+                  id="surname"
+                  name="surname"
+                  placeholder="Surname"
+                />
+              </FormGroup>
 
-            <label htmlFor="email">Email</label>
-            <Field
-              id="email"
-              name="email"
-              placeholder="email address"
-              type="email"
-            />
+              <FormGroup>
+                <LabelStyled htmlFor="email">Email</LabelStyled>
+                <FieldStyled
+                  id="email"
+                  name="email"
+                  placeholder="email address"
+                  type="email"
+                />
+              </FormGroup>
 
-            <button type="submit">Submit</button>
-          </Form>
-        </Formik>
+              <Button type="submit">Submit</Button>
+            </FormStyled>
+          </Formik>
+        </FormContainer>
       )}
-    </div>
+    </Container>
   );
 };
 

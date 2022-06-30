@@ -16,21 +16,25 @@ export const getWordDetails = createAsyncThunk(
       };
 
       const { data } = await axios.get(
-        `https://edeaf-api-staging.azurewebsites.net/v1/Words/${id}`,
+        `https://edeaf-api-staging.azurewebsites.net/v1/admin/Words/${id}`,
         config
       );
 
-      const { data: videoData } = await axios.get(
-        `https://edeaf-api-staging.azurewebsites.net/v1/Words/${id}/video`,
-        config
-      );
+      // const { data: videoData } = await axios.get(
+      //   `https://edeaf-api-staging.azurewebsites.net/v1/Words/${id}/video`,
+      //   config
+      // );
 
-      const word = {
-        ...data.data,
-        video: videoData,
-      };
+      // const word = {
+      //   ...data.data,
+      //   video: videoData,
+      // };
 
-      return word;
+      // console.log(word);
+
+      // return word;
+
+      return data.data;
     } catch (error) {
       if (!error.response) {
         throw error;

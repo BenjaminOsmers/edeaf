@@ -31,7 +31,7 @@ export const categorySlice = createSlice({
 });
 
 const initialWordState = {
-  words: [],
+  words: null,
   loading: "idle",
   error: null,
 };

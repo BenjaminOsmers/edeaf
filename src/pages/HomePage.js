@@ -1,14 +1,48 @@
 import React, { useEffect } from "react";
-import Button from "../components/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/actions/userActions";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  getCategories,
-  getCategoryWords,
-} from "../store/actions/categoryActions";
+import { getCategories } from "../store/actions/categoryActions";
 import Loader from "../components/Loader";
-import Card from "../components/Card";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+`;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 1rem;
+  margin-top: 1rem;
+  width: 60%;
+  max-width: 900px;
+`;
+
+const Card = styled.div`
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(14.1px);
+  padding: 1rem;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const LinkStyled = styled(Link)`
+  text-decoration: none;
+  color: #000;
+`;
+
+const Title = styled.h3`
+  text-align: center;
+`;
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -19,9 +53,6 @@ const HomePage = () => {
   const categoriesState = useSelector((state) => state.categories);
   const { loading, error, categories } = categoriesState;
 
-  // const categoryWordState = useSelector((state) => state.categoryWords);
-  // const { loading: wordsLoading, error: wordsError, words } = categoryWordState;
-
   const history = useNavigate();
   const location = useLocation();
 
@@ -29,40 +60,32 @@ const HomePage = () => {
 
   useEffect(() => {
     if (user) {
-      console.log(user);
       dispatch(getCategories());
     } else {
       history("/login");
     }
   }, [history, user, redirect, dispatch]);
 
-  const logoutHandler = () => {
-    dispatch(logout());
-  };
-
-  // const viewWords = (id) => {
-  //   dispatch(getCategoryWords(id));
-  // };
-
   return (
-    <div>
+    <Container>
       {loading === "loading" ? (
         <Loader text="Fetching Categories" />
       ) : error ? (
         <>
-          <h1>Error</h1>
+          <h1>{error.message}</h1>
         </>
       ) : (
-        <>
+        <Grid>
           {categories.map((category) => (
-            <Link key={category.id} to={`/category/${category.id}`}>
-              {category.name}
-            </Link>
+            <LinkStyled key={category.id} to={`/category/${category.id}`}>
+              <Card>
+                <Title>{category.name}</Title>
+              </Card>
+            </LinkStyled>
           ))}
-          <Button onClick={logoutHandler}>Logout</Button>
-        </>
+        </Grid>
       )}
-    </div>
+    </Container>
   );
 };
 

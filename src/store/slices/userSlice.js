@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login, logout } from "../actions/userActions";
+import { login, logout, updateUser } from "../actions/userActions";
 
 const initialState = {
   user: localStorage.getItem("userInfo")
@@ -37,6 +37,35 @@ export const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(logout.rejected, (state, action) => {
+        state.loading = "error";
+        if (action.payload) {
+          state.error = { message: action.payload };
+        } else {
+          state.error = { message: action.error };
+        }
+      });
+  },
+});
+
+const initialUpdateState = {
+  userUpdate: null,
+  loading: "idle",
+  error: null,
+};
+
+export const userUpdateSlice = createSlice({
+  name: "update",
+  initialState: initialUpdateState,
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateUser.pending, (state, action) => {
+        state.loading = "loading";
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = "success";
+        state.user = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.loading = "error";
         if (action.payload) {
           state.error = { message: action.payload };

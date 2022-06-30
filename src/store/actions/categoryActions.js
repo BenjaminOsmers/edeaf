@@ -48,9 +48,11 @@ export const getCategoryWords = createAsyncThunk(
       };
 
       const { data } = await axios.get(
-        `https://edeaf-api-staging.azurewebsites.net/v1/Categories/${id}/words`,
+        `https://edeaf-api-staging.azurewebsites.net/v1/admin/Categories/${id}`,
         config
       );
+
+      data.data.words.sort((a, b) => a.name.localeCompare(b.name));
 
       return data.data;
     } catch (error) {

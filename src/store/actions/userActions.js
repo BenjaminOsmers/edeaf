@@ -57,3 +57,49 @@ export const logout = createAsyncThunk("user/logout", async () => {
 
   return null;
 });
+
+export const updateUser = createAsyncThunk(
+  "update/user",
+  async ({ name, surname, email }, { rejectWithValue, getState }) => {
+    try {
+      const {
+        user: { user },
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token.access_token}`,
+        },
+      };
+
+      const { data } = await axios.put(
+        `https://edeaf-api-staging.azurewebsites.net/v1/admin/Users/current`,
+        {
+          name,
+          lastName: surname,
+          email,
+        },
+        config
+      );
+
+      const userNew = {
+        name,
+        surname,
+        email,
+        token: user.token,
+      };
+
+      localStorage.setItem("userInfo", JSON.stringify(userNew));
+
+      return userNew;
+    } catch (error) {
+      if (!error.response) {
+        throw error;
+      }
+
+      console.log(error.response.data);
+
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);

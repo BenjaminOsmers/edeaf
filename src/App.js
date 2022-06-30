@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import Container from "./components/Container";
 import HomePage from "./pages/HomePage";
 import WordsPage from "./pages/WordsPage";
+import Word from "./pages/Word";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/login" element={<LoginPage />}></Route>
             <Route path="/register" element={<RegisterPage />}></Route>
             <Route path="/category/:id" element={<WordsPage />}></Route>
+            <Route path="/category/:catId/word/:id" element={<Word />}></Route>
           </Routes>
         </Container>
       </main>

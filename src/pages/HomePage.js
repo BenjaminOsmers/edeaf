@@ -19,8 +19,8 @@ const HomePage = () => {
   const categoriesState = useSelector((state) => state.categories);
   const { loading, error, categories } = categoriesState;
 
-  const categoryWordState = useSelector((state) => state.categoryWords);
-  const { loading: wordsLoading, error: wordsError, words } = categoryWordState;
+  // const categoryWordState = useSelector((state) => state.categoryWords);
+  // const { loading: wordsLoading, error: wordsError, words } = categoryWordState;
 
   const history = useNavigate();
   const location = useLocation();
@@ -40,9 +40,9 @@ const HomePage = () => {
     dispatch(logout());
   };
 
-  const viewWords = (id) => {
-    dispatch(getCategoryWords(id));
-  };
+  // const viewWords = (id) => {
+  //   dispatch(getCategoryWords(id));
+  // };
 
   return (
     <div>
@@ -55,7 +55,9 @@ const HomePage = () => {
       ) : (
         <>
           {categories.map((category) => (
-            <Link to={`/category/${category.id}`}>{category.name}</Link>
+            <Link key={category.id} to={`/category/${category.id}`}>
+              {category.name}
+            </Link>
           ))}
           <Button onClick={logoutHandler}>Logout</Button>
         </>

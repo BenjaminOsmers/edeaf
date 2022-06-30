@@ -11,7 +11,7 @@ export const getCategories = createAsyncThunk(
 
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user.token.access_token}`,
         },
       };
 
@@ -43,7 +43,7 @@ export const getCategoryWords = createAsyncThunk(
 
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user.token.access_token}`,
         },
       };
 
@@ -51,8 +51,6 @@ export const getCategoryWords = createAsyncThunk(
         `https://edeaf-api-staging.azurewebsites.net/v1/Categories/${id}/words`,
         config
       );
-
-      console.log(data);
 
       return data.data;
     } catch (error) {

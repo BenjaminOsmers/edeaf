@@ -18,11 +18,11 @@ export const login = createAsyncThunk(
         scope: "openid profile role email offline_access adminApi mobileApi",
       });
 
-      const { access_token } = await getToken();
+      const token = await getToken();
 
       const config = {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${token.access_token}`,
         },
       };
 
@@ -37,7 +37,7 @@ export const login = createAsyncThunk(
         name: `${data.data.name}`,
         lastName: `${data.data.lastName}`,
         roles: data.data.roles,
-        token: `${access_token}`,
+        token,
       };
 
       localStorage.setItem("userInfo", JSON.stringify(user));

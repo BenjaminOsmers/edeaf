@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login } from "../store/actions/userActions";
 import Loader from "../components/Loader";
-
-// login: admin@codehesion.co.za
-
-// password: P@ssword1
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import FormContainer from "../components/FormContainer";
+import Container from "../components/Container";
+import Heading from "../components/Heading";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -24,40 +25,60 @@ const LoginPage = () => {
     if (user) {
       history(`${redirect}`);
     }
-  }, [history, user, redirect]);
+
+    if (error && error.message) {
+      toast.warn(`${error.message}`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }, [history, user, redirect, error]);
 
   const submithandler = (values) => {
     dispatch(login(values));
   };
 
   return (
-    <div>
+    <Container>
+      <ToastContainer />
       {loading === "loading" ? (
         <Loader text="Submitting Data" />
       ) : (
-        <Formik
-          initialValues={{
-            username: "",
-            password: "",
-          }}
-          onSubmit={(values) => submithandler(values)}
-        >
-          <Form>
-            <label htmlFor="username">Username</label>
-            <Field
-              id="username"
-              name="username"
-              placeholder="email address"
-              type="email"
-            />
+        <FormContainer>
+          <Heading>
+            <h2>Welcome to,</h2>
+            <h1>eDeaf</h1>
+            <p>Enter your details below to log in.</p>
+          </Heading>
+          <Formik
+            initialValues={{
+              username: "",
+              password: "",
+            }}
+            onSubmit={(values) => submithandler(values)}
+          >
+            <Form>
+              <label htmlFor="username">Username</label>
+              <Field
+                id="username"
+                name="username"
+                placeholder="email address"
+                type="email"
+              />
 
-            <label htmlFor="password">Password</label>
-            <Field id="password" name="password" placeholder="***" />
-            <button type="submit">Submit</button>
-          </Form>
-        </Formik>
+              <label htmlFor="password">Password</label>
+              <Field id="password" name="password" placeholder="***" />
+              <button type="submit">Submit</button>
+            </Form>
+          </Formik>
+        </FormContainer>
       )}
-    </div>
+    </Container>
   );
 };
 

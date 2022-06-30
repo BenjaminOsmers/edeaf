@@ -47,8 +47,6 @@ export const login = createAsyncThunk(
         throw error;
       }
 
-      console.log(error.response.data);
-
       return rejectWithValue(error.response.data.message);
     }
   }
